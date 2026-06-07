@@ -25,7 +25,7 @@ public class AdminToiletUploadService {
     private final ToiletRepository toiletRepository;
     private static final int BATCH_SIZE = 1000;
 
-    @Async
+    @Async("excelParsingExecutor")
     public void processExcelUploadAsync(File tempFile, String traceId) {
         MDC.put("traceId", traceId);
         log.info("엑셀 파싱 시작. 파일크기: {} bytes", tempFile.length());
