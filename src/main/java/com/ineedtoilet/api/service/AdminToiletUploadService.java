@@ -65,7 +65,7 @@ public class AdminToiletUploadService {
         List<Toilet> entitiesToSave = new ArrayList<>();
 
         for (ToiletExcelDto dto : batchList) {
-            // 방어 로직: 필수 값인 화장실명이 없는 불량 데이터는 스킵(Drop)합니다.
+            //화장실명이 없는 경우
             if (!StringUtils.hasText(dto.getToiletName())) {
                 log.warn("화장실명이 누락된 데이터 발견, 저장을 건너뜁니다. 주소: {}", dto.getRoadAddress());
                 continue;
