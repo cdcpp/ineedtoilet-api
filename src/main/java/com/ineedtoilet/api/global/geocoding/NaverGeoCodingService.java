@@ -21,8 +21,7 @@ public class NaverGeoCodingService implements GeoCodingClient {
     @Value("${naver.map.client.secret}")
     private String clientSecret;
 
-    // 네이버 Geocoding API 엔드포인트
-    private static final String NAVER_GEOCODE_URL = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
+    private static final String NAVER_GEOCODE_URL = "https://maps.apigw.ntruss.com/map-geocode/v2/geocode";
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -37,6 +36,7 @@ public class NaverGeoCodingService implements GeoCodingClient {
             HttpHeaders headers = new HttpHeaders();
             headers.set("X-NCP-APIGW-API-KEY-ID", clientId);
             headers.set("X-NCP-APIGW-API-KEY", clientSecret);
+            headers.set("Accept", "application/json");
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             URI uri = UriComponentsBuilder.fromHttpUrl(NAVER_GEOCODE_URL)
@@ -56,7 +56,6 @@ public class NaverGeoCodingService implements GeoCodingClient {
             JsonNode addresses = rootNode.path("addresses");
 
             if (addresses.isArray() && addresses.size() > 0) {
-                // 가장 정확도가 높은 첫 번째 결과 추출
                 JsonNode firstAddress = addresses.get(0);
                 double x = firstAddress.path("x").asDouble(); // 경도
                 double y = firstAddress.path("y").asDouble(); // 위도
