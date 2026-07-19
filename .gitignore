@@ -40,3 +40,6 @@ out/
 Thumbs.db
 logs/
 *.log
+
+### Secret Files ###
+application-secret.yml

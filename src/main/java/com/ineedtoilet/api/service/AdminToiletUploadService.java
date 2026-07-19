@@ -5,6 +5,7 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.ineedtoilet.api.dto.ToiletExcelDto;
 import com.ineedtoilet.api.entity.Toilet;
+import com.ineedtoilet.api.global.geocoding.NaverGeoCodingService;
 import com.ineedtoilet.api.repository.ToiletRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.util.StringUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -23,6 +25,8 @@ import java.util.List;
 public class AdminToiletUploadService {
 
     private final ToiletRepository toiletRepository;
+    private final NaverGeoCodingService naverGeoCodingService;
+
     private static final int BATCH_SIZE = 1000;
 
     @Async("excelParsingExecutor")
@@ -71,6 +75,21 @@ public class AdminToiletUploadService {
                 continue;
             }
 
+            double[] safeCoords = new double[]{0.0, 0.0};
+
+            if (StringUtils.hasText(dto.getRoadAddress())) {
+                safeCoords = Optional.ofNullable(naverGeoCodingService.getCoordinates(dto.getRoadAddress()))
+                        .orElse(new double[]{0.0, 0.0});
+
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+
+
             Toilet toilet = Toilet.builder()
                     .toiletName(dto.getToiletName())
                     .category(dto.getCategory())
@@ -79,9 +98,10 @@ public class AdminToiletUploadService {
                     .parcelAddress(dto.getParcelAddress())
                     .openTime(dto.getOpenTime())
                     .openTimeDetail(dto.getOpenTimeDetail())
-                    .latitude(dto.getLatitude())
-                    .longitude(dto.getLongitude())
+                    .latitude(safeCoords[1])
+                    .longitude(safeCoords[0])
                     .build();
+
 
             entitiesToSave.add(toilet);
         }

@@ -21,11 +21,13 @@ public class AdminToiletController {
 
     private final AdminToiletUploadService adminToiletUploadService;
 
-    // 허용하는 엑셀 파일의 확장자 및 Content-Type 목록
+    // 허용하는 엑셀 파일의 확장자 및 Content-Type 목록 (Java 8 호환)
     private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("xlsx", "xls");
     private static final List<String> ALLOWED_CONTENT_TYPES = Arrays.asList(
             "application/vnd.ms-excel",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/octet-stream", // 범용적인 파일 타입
+            "application/haansoftxlsx"  // 한컴오피스 한셀 타입 추가
     );
 
     @PostMapping("/upload")
@@ -36,7 +38,7 @@ public class AdminToiletController {
             throw new IllegalArgumentException("업로드된 엑셀 파일이 비어 있습니다.");
         }
 
-        // 엑셀 파일 유효성 검증
+        // 엑셀 파일 유효성 검증 로직 호출
         validateExcelFile(file);
 
         // 요청 고유 ID (TraceID) 생성 및 메인 스레드 MDC 저장
