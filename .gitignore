@@ -43,3 +43,4 @@ logs/
 
 ### Secret Files ###
 application-secret.yml
+.env

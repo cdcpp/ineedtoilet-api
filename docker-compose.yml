@@ -1,16 +1,18 @@
 version: '3.8'
-
 services:
   db:
-    image: postgis/postgis:15-3.3
-    container_name: ineedtoilet-postgres
+    image: postgres:15
+    container_name: ineedtoilet-db
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: ineedtoilet
-      POSTGRES_USER: captain
-      POSTGRES_PASSWORD: password123
+      # 실제 값 대신 ${변수명}을 사용하면, 도커가 기동할 때 자동으로 .env 파일을 찾아 값을 채워 넣습니다.
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
       TZ: Asia/Seoul
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
-    restart: always
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
