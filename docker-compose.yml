@@ -6,7 +6,6 @@ services:
     ports:
       - "5432:5432"
     environment:
-      # 실제 값 대신 ${변수명}을 사용하면, 도커가 기동할 때 자동으로 .env 파일을 찾아 값을 채워 넣습니다.
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
